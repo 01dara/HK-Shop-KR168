@@ -1,1391 +1,1016 @@
 <!DOCTYPE html>
 <html lang="km">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ទំនិញOnline KH-KR</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Khmer&family=Noto+Sans+KR&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #e74c3c;
-      --dark: #2c3e50;
-      --light: #ecf0f1;
-      --gray: #95a5a6;
-      --success: #27ae60;
-      --danger: #c0392b;
-      --font: 'Khmer', sans-serif;
-      --font-kr: 'Noto Sans KR', sans-serif;
-      --font-en: 'Roboto', sans-serif;
-    }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: var(--font), var(--font-kr), var(--font-en);
-    }
-    body {
-      background: var(--light);
-      color: #333;
-      transition: all 0.3s;
-      font-size: 14px;
-    }
-    body.dark {
-      background: #1a1a1a;
-      color: #eee;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 10px;
-    }
-    header {
-      background: var(--primary);
-      color: white;
-      padding: 12px 15px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      text-align: center;
-    }
-    .logo {
-      font-size: 1.6rem;
-      font-weight: 700;
-      text-shadow: 0 0 10px rgba(255,255,255,0.5);
-      animation: glow 2s infinite alternate;
-    }
-    @keyframes glow {
-      from { text-shadow: 0 0 5px #fff; }
-      to { text-shadow: 0 0 20px #fff, 0 0 30px var(--primary); }
-    }
-    .admin-info {
-      font-size: 0.9rem;
-      opacity: 0.9;
-    }
-    nav {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 15px;
-    }
-    nav button {
-      flex: 1;
-      min-width: 80px;
-      background: var(--dark);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 6px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    nav button:hover {
-      background: #34495e;
-    }
-    nav button.active {
-      background: var(--primary);
-    }
-    .section {
-      display: none;
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    .section.active {
-      display: block;
-    }
-    body.dark .section {
-      background: #2d2d2d;
-      color: #eee;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 12px;
-      margin-top: 15px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      transition: 0.3s;
-      text-align: center;
-      position: relative;
-    }
-    body.dark .card {
-      background: #333;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    }
-    .card img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-    }
-    .card-body {
-      padding: 10px;
-    }
-    .price {
-      font-weight: 700;
-      color: var(--primary);
-      font-size: 1rem;
-    }
-    .stock {
-      font-size: 0.8rem;
-      color: var(--success);
-      font-weight: 600;
-    }
-    .stock.low { color: #e67e22; }
-    .stock.out { color: var(--danger); }
-    .cart-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-      flex-wrap: wrap;
-    }
-    body.dark .cart-item {
-      border-color: #444;
-    }
-    .cart-item img {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 6px;
-    }
-    .cart-item input {
-      width: 50px;
-      text-align: center;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 0.85rem;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    body.dark th, body.dark td {
-      border-color: #444;
-    }
-    th {
-      background: var(--primary);
-      color: white;
-    }
-    .search-bar {
-      margin-bottom: 15px;
-      display: flex;
-      gap: 8px;
-    }
-    .search-bar input {
-      flex: 1;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-    }
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 12px;
-      margin: 15px 0;
-    }
-    .chart-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      margin: 20px 0;
-    }
-    .chart-item {
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    body.dark .chart-item {
-      background: #2d2d2d;
-    }
-    .chart-container {
-      position: relative;
-      height: 260px;
-      margin: 10px 0;
-    }
-    canvas {
-      width: 100% !important;
-      height: 100% !important;
-    }
-    .summary-card {
-      background: var(--primary);
-      color: white;
-      padding: 15px;
-      border-radius: 10px;
-      text-align: center;
-      font-weight: 600;
-    }
-    .summary-card h3 {
-      font-size: 0.9rem;
-      margin-bottom: 5px;
-      opacity: 0.9;
-    }
-    .summary-card .value {
-      font-size: 1.3rem;
-    }
-    .form-group {
-      margin-bottom: 12px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 0.9rem;
-    }
-    body.dark input, body.dark select, body.dark textarea {
-      background: #333;
-      color: #eee;
-      border-color: #555;
-    }
-    .upload-area {
-      border: 2px dashed #ccc;
-      border-radius: 10px;
-      padding: 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .upload-area:hover {
-      border-color: var(--primary);
-      background: #f9f9f9;
-    }
-    body.dark .upload-area {
-      border-color: #555;
-      background: #333;
-    }
-    .total-table {
-      margin-top: 15px;
-      background: #f8f9fa;
-      padding: 12px;
-      border-radius: 8px;
-    }
-    body.dark .total-table {
-      background: #333;
-    }
-    .total-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      font-weight: 500;
-    }
-    .total-row.final {
-      border-top: 2px solid var(--primary);
-      font-size: 1.1rem;
-      color: var(--primary);
-      margin-top: 8px;
-      padding-top: 8px;
-    }
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 26px;
-    }
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #ccc;
-      transition: .4s;
-      border-radius: 34px;
-    }
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-    input:checked + .slider {
-      background-color: var(--success);
-    }
-    input:checked + .slider:before {
-      transform: translateX(24px);
-    }
-    .sync-status {
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 6px;
-      text-align: center;
-      font-size: 0.9rem;
-      display: none;
-    }
-    .sync-success { background: #d4edda; color: #155724; }
-    .sync-error { background: #f8d7da; color: #721c24; }
-    button {
-      background: var(--dark);
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 0.85rem;
-    }
-    .btn-success { background: var(--success); }
-    .btn-danger { background: var(--danger); }
-    .add-to-cart-btn {
-      background: var(--success);
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      margin-top: 5px;
-      width: 100%;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .add-to-cart-btn:hover {
-      background: #219653;
-    }
-    .staff-info {
-      font-size: 0.85rem;
-      color: var(--primary);
-      font-weight: 600;
-      margin: 10px 0;
-      text-align: center;
-    }
-    .staff-summary {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      margin-top: 20px;
-    }
-    .staff-card {
-      background: #f8f9fa;
-      padding: 12px;
-      border-radius: 10px;
-      text-align: center;
-      font-weight: 600;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
-    }
-    body.dark .staff-card {
-      background: #3a3a3a;
-      color: #eee;
-    }
-    .staff-card h4 {
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-      color: var(--primary);
-    }
-    .staff-card .value {
-      font-size: 1.1rem;
-      color: #27ae60;
-    }
-    .staff-card .value.unpaid {
-      color: #e67e22;
-    }
-    @media (max-width: 768px) {
-      .grid { grid-template-columns: repeat(2, 1fr); }
-      .chart-grid { grid-template-columns: 1fr; }
-      nav { justify-content: center; }
-      header { flex-direction: column; }
-      .logo { font-size: 1.4rem; }
-    }
-    @media (max-width: 480px) {
-      .grid { grid-template-columns: 1fr; }
-      button, input, select { font-size: 0.8rem; padding: 6px 10px; }
-      .card img { height: 100px; }
-      .add-to-cart-btn { font-size: 0.75rem; }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Online KH-KR POS System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @font-face {
+            font-family: 'Khmer';
+            src: url('https://cdn.jsdelivr.net/gh/lyhengly/Khmer-Fonts@master/fonts/KhmerOSBattambang.ttf') format('truetype');
+        }
+        :root {
+            --primary: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --success: #27ae60;
+            --warning: #f39c12;
+        }
+        .dark-mode {
+            --primary: #e74c3c;
+            --dark: #ecf0f1;
+            --light: #2c3e50;
+            background: #1a1a1a; color: #fff;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Khmer', Arial, sans-serif; }
+        body { background: var(--light); color: var(--dark); transition: 0.4s; }
+        header {
+            background: linear-gradient(135deg, #ff6b6b, var(--primary));
+            color: white; padding: 1.5rem; text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .logo { font-size: 3.2rem; font-weight: bold; animation: glow 2s infinite alternate; }
+        @keyframes glow { from { text-shadow: 0 0 10px #fff; } to { text-shadow: 0 0 30px #ff6b6b; } }
+        nav { background: var(--dark); padding: 1rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .nav-tabs { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; }
+        .nav-tabs button {
+            padding: 0.9rem 1.8rem; background: #34495e; color: white;
+            border: none; border-radius: 50px; cursor: pointer; font-weight: bold;
+            transition: all 0.3s;
+        }
+        .nav-tabs button:hover, .nav-tabs button.active {
+            background: var(--primary); transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(231,76,60,0.5);
+        }
+        .container { padding: 2rem; max-width: 1600px; margin: auto; }
+        .product-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.8rem; margin-top: 2rem; }
+        @media (max-width: 1200px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 900px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 600px) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
+        .product-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.12); transition: all 0.4s; position: relative; }
+        .dark-mode .product-card { background: #2c3e50; }
+        .product-card:hover { transform: translateY(-12px) scale(1.03); }
+        .product-card img { width: 100%; height: 160px; object-fit: cover; }
+        .low-stock-badge { position: absolute; top: 10px; right: 10px; background: #e74c3c; color: white; padding: 0.3rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .btn { padding: 0.8rem; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 0.8rem; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #1e8449; }
+        .btn-info { background: #3498db; color: white; }
+        .btn:disabled { background: #95a5a6; cursor: not-allowed; }
+        .search-filter-bar { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; max-width: 800px; margin: 2rem auto 1.5rem; }
+        .filter-select, .search-box { padding: 1rem 1rem 1rem 3.2rem; border: 3px solid #e0e0e0; border-radius: 50px; font-size: 1.1rem; background: white; box-shadow: 0 8px 25px rgba(0,0,0,0.08); transition: all 0.4s; outline: none; }
+        .filter-select { border-color: var(--primary); min-width: 200px; }
+        .search-box { flex: 1; padding-left: 4.5rem; min-width: 280px; }
+        .search-box:focus, .filter-select:focus { border-color: var(--primary); box-shadow: 0 0 0 5px rgba(231,76,60,0.2); }
+        .customer-form { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin-bottom: 2rem; border: 3px solid var(--primary); }
+        .dark-mode .customer-form { background: #2c3e50; }
+        .form-group { margin-bottom: 1.2rem; position: relative; }
+        .form-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 1.3rem; z-index: 2; }
+        .form-group input, .form-group select { width: 100%; padding: 1rem 1rem 1rem 3.5rem; border: 2px solid #ddd; border-radius: 50px; font-size: 1.1rem; background: white; transition: 0.3s; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 15px rgba(231,76,60,0.3); }
+        .summary-box { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; padding: 1.5rem; border-radius: 20px; text-align: center; font-size: 1.3rem; margin: 1.5rem 0; box-shadow: 0 10px 25px rgba(39,174,96,0.4); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 90%; max-width: 600px; border-radius: 25px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .dark-mode .modal-content { background: #2c3e50; }
+        .modal-header { background: var(--primary); color: white; padding: 1.5rem; text-align: center; position: relative; }
+        .close-btn { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        .modal-body { padding: 2rem; max-height: 70vh; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        th, td { padding: 1rem; text-align: center; border-bottom: 1px solid #eee; }
+        th { background: var(--primary); color: white; font-weight: bold; }
+        tr:hover { background: #f8f9fa; }
+        .dark-mode tr:hover { background: #34495e; }
+        .dark-mode table { background: #2c3e50; }
+        .status-paid { background: #27ae60; color: white; padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.9rem; }
+        .status-unpaid { background: #e74c3c; color: white; padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.9rem; }
+        .staff-summary-controls { display: flex; justify-content: center; gap: 1rem; margin: 1.5rem 0; flex-wrap: wrap; }
+        .staff-summary-controls button { padding: 0.8rem 1.5rem; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; background: #34495e; color: white; }
+        .staff-summary-controls button.active { background: var(--primary); }
+        #staffDetailTableContainer { margin-top: 2rem; overflow-x: auto; }
+        #staffDetailTable th { background: #34495e; }
+        .product-list-detail { font-size: 0.9rem; line-height: 1.5; text-align: left; padding: 0.5rem 0; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Header -->
     <header>
-      <div>
-        <div class="logo" id="storeName">ទំនិញOnline KH-KR</div>
-        <div class="admin-info" id="adminName">Admin: Hout Dara</div>
-      </div>
+        <div class="logo">Online <span style="color:#fff;">KH-KR</span></div>
+        <div class="admin">Admin: ហួត ដារ៉ា</div>
     </header>
-    <!-- Navigation -->
     <nav>
-      <button data-section="product-order">បញ្ជាទំនិញ</button>
-      <button data-section="products" class="active">ទំនិញ</button>
-      <button data-section="cart">រទេះ</button>
-      <button data-section="orders">ប្រវត្តិ</button>
-      <button data-section="online-order">បញ្ជាទិញអនឡាញ</button>
-      <button data-section="summary">សរុប</button>
-      <button data-section="add-product">បន្ថែម</button>
-      <button data-section="settings">កំណត់</button>
+        <div class="nav-tabs">
+            <button onclick="showTab('products')" class="active">ទំនិញ</button>
+            <button onclick="showTab('cart')">រទេះ</button>
+            <button onclick="showTab('addproduct')">បន្ថែមទំនិញ</button>
+            <button onclick="showTab('orders')">ប្រវត្តិ</button>
+            <button onclick="showTab('staffSummary')" style="background:var(--warning);color:white;">សង្ខេបបុគ្គលិក</button>
+            <button onclick="openSetting()" style="margin-left:auto">Setting</button>
+        </div>
     </nav>
-
-    <!-- Product Order Section -->
-    <div id="product-order" class="section">
-      <h2 id="titleProductOrder">បញ្ជាទំនិញ</h2>
-      <div id="productOrderItems" class="grid"></div>
-    </div>
-
-    <!-- Products Section -->
-    <div id="products" class="section active">
-      <h2 id="titleProducts">ទំនិញទាំងអស់</h2>
-      <div class="search-bar">
-        <input type="text" id="searchProduct" placeholder="ស្វែងរក..."/>
-        <button id="searchProductBtn"><i class="fas fa-search"></i></button>
-      </div>
-      <div style="overflow-x:auto; margin-top:15px;">
-        <table id="productTable">
-          <thead>
-            <tr>
-              <th>ឈ្មោះទំនិញ</th>
-              <th>តម្លៃ (₩)</th>
-              <th>ចំនួនស្តុក</th>
-              <th>សកម្មភាព</th>
-            </tr>
-          </thead>
-          <tbody id="productTableBody"></tbody>
-        </table>
-      </div>
-      <button class="btn-success" id="exportProductsBtn" style="width:100%; margin-top:15px;">
-        Save ទំនិញ ទៅ Excel
-      </button>
-    </div>
-
-    <!-- Cart Section -->
-    <div id="cart" class="section">
-      <h2 id="titleCart">រទេះទំនិញ</h2>
-      <div class="staff-info" id="cartStaffInfo">បុគ្គលិក: <span id="currentStaff">គ្មាន</span></div>
-      <div id="cartItems"></div>
-      <div class="form-group">
-        <label id="labelName">ឈ្មោះអតិថិជន</label>
-        <input type="text" id="customerName" placeholder="បញ្ចូលឈ្មោះ"/>
-      </div>
-      <div class="form-group">
-        <label id="labelPhone">លេខទូរស័ព្ទ</label>
-        <input type="tel" id="customerPhone" placeholder="012 345 678"/>
-      </div>
-      <div class="form-group">
-        <label id="labelAddress">ទីតាំងអតិថិជន</label>
-        <input type="text" id="customerAddress" placeholder="ផ្ទះលេខ..., ផ្លូវ..., សង្កាត់..." />
-      </div>
-      <div class="form-group">
-        <label id="labelPaymentStatus">ទូទាត់ / មិនទូទាត់</label>
-        <select id="paymentMethod">
-          <option value="paid">ទូទាត់</option>
-          <option value="unpaid">មិនទូទាត់</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label id="labelDelivery">សេវាដឹកជញ្ជូន (₩)</label>
-        <input type="number" id="deliveryFee" value="3000" min="0"/>
-      </div>
-      <div class="total-table" id="cartTotal"></div>
-      <button class="btn-success" id="checkoutBtn" style="width:100%; margin-top:15px;">
-        បញ្ជាទិញ
-      </button>
-      <button class="btn-success" id="generateReceiptBtn" style="width:100%; margin-top:10px; display:none;">
-        បង្កើតបង្កាន់ដៃ
-      </button>
-    </div>
-
-    <!-- Order History -->
-    <div id="orders" class="section">
-      <h2 id="titleOrders">ប្រវត្តិការបញ្ជាទិញ</h2>
-      <div class="search-bar">
-        <input type="text" id="searchOrder" placeholder="ស្វែងរក..."/>
-        <button id="searchBtn"><i class="fas fa-search"></i></button>
-      </div>
-      <div style="overflow-x:auto;">
-        <table id="orderTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>កាលបរិច្ឆេទ</th>
-              <th>អតិថិជន</th>
-              <th>ទីតាំង</th>
-              <th>បុគ្គលិក</th>
-              <th>ទំនិញ</th>
-              <th>សរុប</th>
-              <th>ដឹក</th>
-              <th>សុទ្ធ</th>
-              <th id="paymentStatusHeader">ទូទាត់</th>
-              <th>សកម្មភាព</th>
-            </tr>
-          </thead>
-          <tbody id="orderTableBody"></tbody>
-        </table>
-      </div>
-      <button class="btn-success" id="exportOrdersBtn" style="width:100%; margin-top:15px;">
-        Save ប្រវត្តិ ទៅ Excel
-      </button>
-    </div>
-
-    <!-- Online Order Section -->
-    <div id="online-order" class="section"></div>
-
-    <!-- Sales Summary -->
-    <div id="summary" class="section">
-      <h2 id="titleSummary">សង្ខេបលក់</h2>
-      <div class="summary-grid">
-        <div class="summary-card">
-          <h3 id="sumTotalSales">លក់សរុប</h3>
-          <div class="value" id="totalSales">₩0</div>
-        </div>
-        <div class="summary-card">
-          <h3 id="sumOrderCount">ចំនួនការបញ្ជា</h3>
-          <div class="value" id="orderCount">0</div>
-        </div>
-        <div class="summary-card">
-          <h3 id="sumTotalDelivery">ដឹកសរុប</h3>
-          <div class="value" id="totalDelivery">₩0</div>
-        </div>
-        <div class="summary-card">
-          <h3 id="sumNetSales">សុទ្ធសរុប</h3>
-          <div class="value" id="netSales">₩0</div>
-        </div>
-      </div>
-      <div class="chart-grid">
-        <div class="chart-item">
-          <h3 id="pieChartTitle">Pie Chart: ចែកចាយលក់</h3>
-          <div class="chart-container">
-            <canvas id="pieChart"></canvas>
-          </div>
-        </div>
-        <div class="chart-item">
-          <h3 id="barChartTitle">Bar Chart: ទិដ្ឋភាពសូចនារ</h3>
-          <div class="chart-container">
-            <canvas id="barChart"></canvas>
-          </div>
-        </div>
-      </div>
-      <div class="staff-summary" id="staffSummary"></div>
-    </div>
-
-    <!-- Add Product -->
-    <div id="add-product" class="section">
-      <h2 id="titleAddProduct">បន្ថែមទំនិញថ្មី</h2>
-      <div class="upload-area" id="uploadArea">
-        <i class="fas fa-cloud-upload-alt" style="font-size:2rem; color:#999;"></i>
-        <p id="uploadText">ចុចដើម្បីបញ្ចូលរូបភាព</p>
-        <input type="file" id="productImage" accept="image/*" hidden/>
-      </div>
-      <div class="form-group">
-        <label id="labelProductName">ឈ្មោះទំនិញ</label>
-        <input type="text" id="newProductName" placeholder="ឈ្មោះ"/>
-      </div>
-      <div class="form-group">
-        <label id="labelProductPrice">តម្លៃ (₩)</label>
-        <input type="number" id="newProductPrice" placeholder="0" min="0"/>
-      </div>
-      <div class="form-group">
-        <label id="labelProductStock">ចំនួនស្តុក</label>
-        <input type="number" id="newProductStock" value="10" min="0"/>
-      </div>
-      <button class="btn-success" id="addProductBtn" style="width:100%;">
-        បញ្ចូលទំនិញ
-      </button>
-    </div>
-
-    <!-- Settings -->
-    <div id="settings" class="section">
-      <h2 id="titleSettings">ការកំណត់</h2>
-      <div class="form-group">
-        <label for="langSwitch">ភាសា</label>
-        <select id="langSwitch" style="width:100%;">
-          <option value="km">ខ្មែរ (KH)</option>
-          <option value="kr">한국어 (KR)</option>
-          <option value="en">English (EN)</option>
-        </select>
-      </div>
-      <div class="form-group" style="display:flex; align-items:center; gap:10px;">
-        <label>Dark Mode</label>
-        <label class="switch">
-          <input type="checkbox" id="darkModeToggle">
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="form-group">
-        <label id="labelStoreName">ឈ្មោះហាង</label>
-        <input type="text" id="settingStoreName" placeholder="បញ្ចូលឈ្មោះហាង"/>
-      </div>
-      <div class="form-group">
-        <label id="labelAdminName">ឈ្មោះ Admin</label>
-        <input type="text" id="settingAdminName" placeholder="បញ្ចូលឈ្មោះ Admin"/>
-      </div>
-      <div class="form-group">
-        <label id="labelStaffName">ឈ្មោះបុគ្គលិកលក់</label>
-        <input type="text" id="settingStaffName" placeholder="ឈ្មោះបុគ្គលិក"/>
-      </div>
-      <div class="form-group">
-        <label id="labelCurrencyRate">អត្រាប្តូរប្រាក់ (1₩ = ?៛)</label>
-        <input type="number" id="settingCurrencyRate" value="33" min="1"/>
-      </div>
-      <div class="form-group">
-        <label id="labelDefaultDelivery">សេវាដឹកជញ្ជូនលំនាំដើម (₩)</label>
-        <input type="number" id="settingDefaultDelivery" value="3000" min="0"/>
-      </div>
-      <div class="form-group">
-        <label id="labelThemeColor">ពណ៌ផ្ទៃខាងក្រោយ</label>
-        <input type="color" id="settingThemeColor" value="#e74c3c"/>
-      </div>
-      <div class="form-group" style="display:flex; align-items:center; gap:10px;">
-        <label id="labelDarkModeDefault">Dark Mode ជាលំនាំដើម</label>
-        <label class="switch">
-          <input type="checkbox" id="settingDarkModeDefault">
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="form-group" style="display:flex; align-items:center; gap:10px;">
-        <label id="labelMaintenanceMode">បិទហាង (Maintenance)</label>
-        <label class="switch">
-          <input type="checkbox" id="settingMaintenanceMode">
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="form-group" style="display:flex; align-items:center; gap:10px;">
-        <label id="labelShowStock">បង្ហាញចំនួនស្តុក</label>
-        <label class="switch">
-          <input type="checkbox" id="settingShowStock" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="form-group">
-        <label id="labelCloudSync">កំណត់ Cloud Sync</label>
-        <input type="checkbox" id="settingCloudSync" checked> បើក Sync ស្វ័យប្រវត្តិ
-      </div>
-      <button class="btn-success" id="saveSettings" style="width:100%; margin-top:15px;">
-        រក្សាទុកការកំណត់
-      </button>
-      <button class="btn-success" id="syncToCloud" style="width:100%; margin-top:10px;">
-        Sync ទៅ Cloud ឥឡូវនេះ
-      </button>
-      <div id="syncStatus" class="sync-status"></div>
-    </div>
-  </div>
-
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-  <script>
-    window.XLSX = XLSX;
-    window.saveAs = saveAs;
-
-    // ========== Supabase Configuration (Your Keys) ==========
-    const SUPABASE_URL = 'https://crjnbddgfvzeaicyelft.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyam5iZGRnZnZ6ZWFpY3llbGZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MDgzNzIsImV4cCI6MjA3NzQ4NDM3Mn0.-3TJFY6h1Pc4xSaCs0qHPuYkXnaLM04ZsKcXOpgjlwE';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // ========== Translations ==========
-    const translations = {
-      km: {
-        titleProductOrder: "បញ្ជាទំនិញ", titleProducts: "ទំនិញទាំងអស់", titleCart: "រទេះទំនិញ", titleOrders: "ប្រវត្តិការបញ្ជាទិញ",
-        titleOnlineOrder: "បញ្ជាទិញអនឡាញ", titleSummary: "សង្ខេបលក់", titleAddProduct: "បន្ថែមទំនិញថ្មី", titleSettings: "ការកំណត់",
-        labelName: "ឈ្មោះអតិថិជន", labelPhone: "លេខទូរស័ព្ទ", labelAddress: "ទីតាំងអតិថិជន", labelDelivery: "សេវាដឹកជញ្ជូន (₩)",
-        labelPaymentStatus: "ទូទាត់ / មិនទូទាត់", checkoutBtn: "បញ្ជាទិញ", generateReceiptBtn: "បង្កើតបង្កាន់ដៃ",
-        sumTotalSales: "លក់សរុប", sumOrderCount: "ចំនួនការបញ្ជា", sumTotalDelivery: "ដឹកសរុប", sumNetSales: "សុទ្ធសរុប",
-        labelProductName: "ឈ្មោះទំនិញ", labelProductPrice: "តម្លៃ (₩)", labelProductStock: "ចំនួនស្តុក",
-        addProductBtn: "បញ្ចូលទំនិញ", uploadText: "ចុចដើម្បីបញ្ចូលរូបភាព", labelStoreName: "ឈ្មោះហាង", labelAdminName: "ឈ្មោះ Admin",
-        labelStaffName: "ឈ្មោះបុគ្គលិកលក់", labelCurrencyRate: "អត្រាប្តូរប្រាក់ (1₩ = ?៛)", labelDefaultDelivery: "សេវាដឹកជញ្ជូនលំនាំដើម (₩)",
-        labelThemeColor: "ពណ៌ផ្ទៃខាងក្រោយ", labelDarkModeDefault: "Dark Mode ជាលំនាំដើម", labelMaintenanceMode: "បិទហាង (Maintenance)",
-        labelShowStock: "បង្ហាញចំនួនស្តុក", labelCloudSync: "កំណត់ Cloud Sync", saveSettings: "រក្សាទុកការកំណត់", syncToCloud: "Sync ទៅ Cloud ឥឡូវនេះ",
-        syncSuccess: "Sync ជោគជ័យ!", syncError: "Sync បរាជ័យ: សូមពិនិត្យការតភ្ជាប់ ឬការកំណត់ Supabase", noItems: "មិនមានទំនិញ",
-        searchPlaceholder: "ស្វែងរក...", total: "សរុប", delivery: "ដឹក", net: "សុទ្ធ", delete: "លុប", edit: "កែ", addToCart: "បន្ថែម",
-        staff: "បុគ្គលិក", noStaff: "គ្មាន", sumSoldItems: "ទំនិញលក់", pieChartTitle: "Pie Chart: ចែកចាយលក់", barChartTitle: "Bar Chart: ទិដ្ឋភាពសូចនារ",
-        exportProducts: "Save ទំនិញ ទៅ Excel", exportOrders: "Save ប្រវត្តិ ទៅ Excel", paymentPaid: "ទូទាត់", paymentUnpaid: "មិនទូទាត់",
-        receiptGenerated: "បង្កាន់ដៃបានបង្កើតជោគជ័យ!", noOnlineOrders: "មិនមានការបញ្ជាទិញអនឡាញ",
-        staffSalesSummary: "សង្ខេបលក់បុគ្គលិក",
-        staffTotalSales: "ដំលៃសរុប",
-        staffOrderCount: "ចំនួនលក់",
-        staffPaid: "ទូទាត់រួច",
-        staffUnpaid: "មិនទូទាត់"
-      },
-      kr: {}, en: {}
-    };
-
-    // ========== Variables & Elements ==========
-    let products = [], cart = [], orders = [], currentLang = localStorage.getItem('lang') || 'km';
-    let isDark = localStorage.getItem('dark') === 'true';
-    let settings = JSON.parse(localStorage.getItem('settings')) || {
-      storeName: "ទំនិញOnline KH-KR", adminName: "Hout Dara", staffName: "", currencyRate: 33, defaultDelivery: 3000,
-      themeColor: "#e74c3c", darkModeDefault: false, maintenanceMode: false, showStock: true, cloudSync: true
-    };
-    const els = {};
-    const elementIds = [
-      'storeName','adminName','productOrderItems','cartItems','cartTotal','checkoutBtn','orderTableBody',
-      'searchOrder','searchBtn','totalSales','orderCount','totalDelivery','netSales','uploadArea','productImage',
-      'newProductName','newProductPrice','newProductStock','addProductBtn','settingStoreName','settingAdminName',
-      'settingStaffName','settingCurrencyRate','settingDefaultDelivery','settingThemeColor','settingDarkModeDefault',
-      'settingMaintenanceMode','settingShowStock','settingCloudSync','syncToCloud','syncStatus','customerName',
-      'customerPhone','customerAddress','deliveryFee','uploadText','langSwitch','darkModeToggle',
-      'titleProductOrder','titleProducts','titleCart','titleOrders','titleOnlineOrder','titleSummary','titleAddProduct',
-      'titleSettings','labelName','labelPhone','labelAddress','labelDelivery','labelPaymentStatus','sumTotalSales',
-      'sumOrderCount','sumTotalDelivery','sumNetSales','labelProductName','labelProductPrice','labelProductStock',
-      'labelStoreName','labelAdminName','labelStaffName','labelCurrencyRate','labelDefaultDelivery','labelThemeColor',
-      'labelDarkModeDefault','labelMaintenanceMode','labelShowStock','labelCloudSync','saveSettings','pieChartTitle',
-      'barChartTitle','searchProduct','searchProductBtn','cartStaffInfo','currentStaff','exportProductsBtn',
-      'exportOrdersBtn','paymentMethod','generateReceiptBtn','paymentStatusHeader',
-      'staffSummary'
-    ];
-    elementIds.forEach(id => els[id] = document.getElementById(id));
-    els.navButtons = document.querySelectorAll('nav button');
-    els.sections = document.querySelectorAll('.section');
-    let pieChart, barChart;
-    const pieCtx = document.getElementById('pieChart')?.getContext('2d');
-    const barCtx = document.getElementById('barChart')?.getContext('2d');
-
-    // ========== Helper Functions ==========
-    function showSyncStatus(msg, type) {
-      const status = els.syncStatus;
-      if (!status) return;
-      status.textContent = msg;
-      status.className = `sync-status sync-${type}`;
-      status.style.display = 'block';
-      setTimeout(() => status.style.display = 'none', 3000);
-    }
-
-    function applyLanguage(lang) {
-      currentLang = lang;
-      localStorage.setItem('lang', lang);
-      if (els.langSwitch) els.langSwitch.value = lang;
-      document.documentElement.lang = lang === 'kr' ? 'ko' : lang;
-      Object.keys(translations[lang]).forEach(key => {
-        if (els[key]) {
-          if (['searchProduct', 'searchOrder'].includes(key)) {
-            els[key].placeholder = translations[lang].searchPlaceholder;
-          } else {
-            els[key].textContent = translations[lang][key];
-          }
-        }
-      });
-      if (els.currentStaff) els.currentStaff.textContent = settings.staffName || translations[lang].noStaff;
-      if (els.paymentMethod) {
-        els.paymentMethod.innerHTML = `
-          <option value="paid">${translations[lang].paymentPaid}</option>
-          <option value="unpaid">${translations[lang].paymentUnpaid}</option>
-        `;
-      }
-      renderProductOrder();
-      renderProducts();
-      renderCart();
-      renderOrders();
-      renderOnlineOrders();
-      updateSummary();
-    }
-
-    function applyDarkMode(dark) {
-      isDark = dark;
-      document.body.classList.toggle('dark', dark);
-      localStorage.setItem('dark', dark);
-      if (els.darkModeToggle) els.darkModeToggle.checked = dark;
-    }
-
-    function applyThemeColor(color) {
-      document.documentElement.style.setProperty('--primary', color);
-      localStorage.setItem('themeColor', color);
-    }
-
-    function saveSettings() {
-      settings = {
-        storeName: els.settingStoreName?.value || settings.storeName,
-        adminName: els.settingAdminName?.value || settings.adminName,
-        staffName: els.settingStaffName?.value.trim(),
-        currencyRate: parseInt(els.settingCurrencyRate?.value) || 33,
-        defaultDelivery: parseInt(els.settingDefaultDelivery?.value) || 3000,
-        themeColor: els.settingThemeColor?.value,
-        darkModeDefault: els.settingDarkModeDefault?.checked,
-        maintenanceMode: els.settingMaintenanceMode?.checked,
-        showStock: els.settingShowStock?.checked,
-        cloudSync: els.settingCloudSync?.checked
-      };
-      localStorage.setItem('settings', JSON.stringify(settings));
-      if (els.storeName) els.storeName.textContent = settings.storeName;
-      if (els.adminName) els.adminName.textContent = `Admin: ${settings.adminName}`;
-      if (els.deliveryFee) els.deliveryFee.value = settings.defaultDelivery;
-      applyThemeColor(settings.themeColor);
-      applyDarkMode(settings.darkModeDefault);
-      if (els.currentStaff) els.currentStaff.textContent = settings.staffName || translations[currentLang].noStaff;
-      showSyncStatus(translations[currentLang].saveSettings + ' Success', 'success');
-      syncToCloud();
-    }
-
-    function exportToExcel(filename, sheetName, data) {
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(data);
-      XLSX.utils.book_append_sheet(wb, ws, sheetName);
-      XLSX.writeFile(wb, filename + '.xlsx');
-    }
-
-    function exportProductsToExcel() {
-      if (products.length === 0) { showSyncStatus(translations[currentLang].noItems, 'error'); return; }
-      const data = products.map(p => ({
-        [translations[currentLang].labelProductName]: p.name,
-        [translations[currentLang].labelProductPrice]: p.price,
-        [translations[currentLang].labelProductStock]: p.stock
-      }));
-      exportToExcel('Products', translations[currentLang].titleProducts, data);
-    }
-
-    function exportOrdersToExcel() {
-      if (orders.length === 0) { showSyncStatus(translations[currentLang].noItems, 'error'); return; }
-      const data = orders.map(o => ({
-        'ID': o.id.slice(-6),
-        [translations[currentLang].titleOrders]: new Date(o.date).toLocaleString(),
-        [translations[currentLang].labelName]: o.customer.name,
-        [translations[currentLang].labelPhone]: o.customer.phone,
-        [translations[currentLang].labelAddress]: o.customer.address,
-        [translations[currentLang].staff]: o.staff,
-        [translations[currentLang].total]: o.total,
-        [translations[currentLang].delivery]: o.delivery,
-        [translations[currentLang].net]: o.net,
-        [translations[currentLang].labelPaymentStatus]: o.paymentMethod === 'paid' ? translations[currentLang].paymentPaid : translations[currentLang].paymentUnpaid
-      }));
-      exportToExcel('Orders', translations[currentLang].titleOrders, data);
-    }
-
-    function generateReceipt(order) {
-      const items = order.items.map(i => `${i.name} × ${i.qty} @ ₩${i.price} = ₩${i.price * i.qty}`).join('\n');
-      const paymentText = order.paymentMethod === 'paid' ? translations[currentLang].paymentPaid : translations[currentLang].paymentUnpaid;
-      const receiptText = `${settings.storeName}\n${translations[currentLang].titleOrders} ID: ${order.id.slice(-6)}\n${translations[currentLang].labelName}: ${order.customer.name}\n${translations[currentLang].labelPhone}: ${order.customer.phone}\n${translations[currentLang].labelAddress}: ${order.customer.address}\n${translations[currentLang].staff}: ${order.staff}\n${translations[currentLang].labelPaymentStatus}: ${paymentText}\n${translations[currentLang].titleOrders}: ${new Date(order.date).toLocaleString()}\n----------------------------\n${items}\n----------------------------\n${translations[currentLang].total}: ₩${order.total}\n${translations[currentLang].delivery}: ₩${order.delivery}\n${translations[currentLang].net}: ₩${order.net}`;
-      const blob = new Blob([receiptText], { type: 'text/plain;charset=utf-8' });
-      saveAs(blob, `Receipt_${order.id.slice(-6)}.txt`);
-      showSyncStatus(translations[currentLang].receiptGenerated, 'success');
-    }
-
-    function restoreStock(order) {
-      if (!order || !order.items) return;
-      order.items.forEach(item => {
-        const product = products.find(p => p.id === item.id);
-        if (product) product.stock += item.qty;
-      });
-    }
-
-    function renderProductOrder() {
-      const container = els.productOrderItems;
-      if (!container) return;
-      container.innerHTML = '';
-      if (products.length === 0) {
-        container.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:#999;">${translations[currentLang].noItems}</p>`;
-        return;
-      }
-      products.forEach(p => {
-        const stockClass = p.stock <= 0 ? 'out' : p.stock <= 3 ? 'low' : '';
-        const stockText = settings.showStock ? `<div class="stock ${stockClass}">${p.stock > 0 ? p.stock + ' នៅ' : 'អស់'}</div>` : '';
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <img src="${p.image}" alt="${p.name}">
-          <div class="card-body">
-            <div style="font-weight:600;font-size:0.9rem;">${p.name}</div>
-            <div class="price">₩${p.price}</div>
-            ${stockText}
-            <div style="margin-top:5px; display:flex; gap:5px; align-items:center;">
-              <input type="number" id="qty-${p.id}" value="1" min="1" max="${p.stock}" style="width:50px; text-align:center; padding:4px;">
-              <button class="add-to-cart-btn" onclick="addToCart('${p.id}')">${translations[currentLang].addToCart}</button>
+    <div class="container">
+        <!-- Products -->
+        <div id="products" class="tab">
+            <h2 style="text-align:center;margin:1rem 0;">ទំនិញនៅក្នុងស្តុក</h2>
+            <div class="search-filter-bar">
+                <select id="categoryFilter" class="filter-select" onchange="filterProducts()">
+                    <option value="">ទាំងអស់</option>
+                </select>
+                <div style="position:relative;">
+                    <i class="fas fa-search" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);color:#999;font-size:1.4rem;z-index:2;"></i>
+                    <input type="text" id="searchInput" class="search-box" placeholder="ស្វែងរកទំនិញ..." onkeyup="filterProducts()">
+                    <button id="clearSearchBtn" onclick="document.getElementById('searchInput').value=''; filterProducts(); this.style.display='none';"
+                        style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:1.4rem;color:#999;cursor:pointer;display:none;">
+                        x
+                    </button>
+                </div>
             </div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
+            <div class="product-grid" id="productList"></div>
+        </div>
+        <!-- Cart -->
+        <div id="cart" class="tab" style="display:none">
+            <h2 style="text-align:center;margin-bottom:1.5rem;">រទេះទំនិញ</h2>
+            <div class="customer-form">
+                <h3 style="text-align:center;margin-bottom:1.5rem;color:var(--primary);">ព័ត៌មានការបញ្ជាទិញ</h3>
+                <div class="form-group"><i class="fas fa-user"></i><input type="text" id="customerName" placeholder="ឈ្មោះអតិថិជន" value="អតិថិជនទូទៅ"></div>
+                <div class="form-group"><i class="fas fa-phone"></i><input type="text" id="customerPhone" placeholder="លេខទូរសព្ទ"></div>
+                <div class="form-group"><i class="fas fa-map-marker-alt"></i><input type="text" id="customerAddress" placeholder="ទីតាំងដឹកជញ្ជូន"></div>
+                <div class="form-group"><i class="fas fa-percent"></i><input type="number" id="discountPercent" placeholder="បញ្ចុះតម្លៃ (%)" min="0" max="100" value="0" onchange="updateSummary()"></div>
+                <div class="form-group"><i class="fas fa-user-tie"></i>
+                    <select id="salesPerson"><option value="">ជ្រើសរើសបុគ្គលិកលក់</option></select>
+                </div>
+                <div class="form-group">
+                    <label><input type="checkbox" id="paidStatus" checked> ទូទាត់រួច (Uncheck = មិនទាន់ទូទាត់)</label>
+                </div>
+            </div>
+            <div id="cartItems"></div>
+            <div class="summary-box">
+                <div>សរុប: <b id="subtotal">0</b> ₩</div>
+                <div>បញ្ចុះតម្លៃ: <b id="discountAmount">0</b> ₩</div>
+                <div>ដឹកជញ្ជូន: <b id="deliveryFeeShow">5,000</b> ₩</div>
+                <div style="font-size:1.5rem;margin:1rem 0;">ត្រូវបង់: <b id="finalTotal">0</b> ₩</div>
+            </div>
+            <div style="text-align:center;margin-top:2rem;display:flex;gap:1rem;justify-content:center;">
+                <button class="btn btn-success" onclick="checkout()" style="padding:1.2rem 3rem;font-size:1.3rem;">បង់ប្រាក់</button>
+                <button class="btn btn-info" onclick="printInvoice()" style="padding:1.2rem 2rem;font-size:1.2rem;">បោះពុម្ព</button>
+            </div>
+        </div>
+        <!-- Add Product -->
+        <div id="addproduct" class="tab" style="display:none">
+            <h2 style="text-align:center;">បន្ថែមទំនិញថ្មី</h2>
+            <div style="max-width:600px;margin:2rem auto;background:white;padding:2rem;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.15);">
+                <input type="text" id="pName" placeholder="ឈ្មោះទំនិញ" style="width:100%;padding:1rem;margin:0.5rem 0;border-radius:12px;border:2px solid #ddd;font-size:1.1rem;"><br>
+                <input type="number" id="pPrice" placeholder="តម្លៃលក់ (₩)" style="width:100%;padding:1rem;margin:0.5rem 0;border-radius:12px;border:2px solid #ddd;font-size:1.1rem;"><br>
+                <input type="number" id="pStock" placeholder="ចំនួនស្តុក" style="width:100%;padding:1rem;margin:0.5rem 0;border-radius:12px;border:2px solid #ddd;font-size:1.1rem;"><br>
+                <div style="margin:1rem 0;">
+                    <label style="display:block;margin-bottom:0.5rem;font-weight:bold;color:var(--primary);">ប្រភេទទំនិញ</label>
+                    <select id="pCategory" style="width:100%;padding:1rem;border:2px solid #ddd;border-radius:12px;font-size:1.1rem;">
+                        <option value="">ជ្រើសរើសប្រភេទ</option>
+                    </select>
+                </div>
+                <label style="display:block;margin:1rem 0;font-weight:bold;color:var(--primary);">រូបភាពទំនិញ</label>
+                <input type="file" id="pImage" accept="image/*" onchange="previewImage(this)" style="margin-bottom:1rem;">
+                <div style="width:100%;height:200px;border:3px dashed #ddd;border-radius:15px;background:#f9f9f9;display:flex;align-items:center;justify-content:center;overflow:hidden;" id="imagePreview">
+                    <span style="color:#999;">ជ្រើសរូបភាព</span>
+                </div>
+                <button class="btn btn-success" onclick="addProduct()" style="width:100%;padding:1.2rem;margin-top:1rem;font-size:1.2rem;">បន្ថែមទំនិញ</button>
+            </div>
+        </div>
+        <!-- Orders -->
+        <div id="orders" class="tab" style="display:none">
+            <h2 style="text-align:center;margin:1.5rem 0;">ប្រវត្តិការបញ្ជាទិញ</h2>
+            <div style="text-align:center;margin-bottom:1rem;display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;">
+                <select id="staffFilter" onchange="renderOrders()" style="padding:0.8rem 1.2rem;border-radius:50px;border:2px solid var(--primary);font-size:1rem;">
+                    <option value="">ទាំងអស់</option>
+                </select>
+                <button onclick="exportToExcel()" class="btn btn-success" style="padding:0.8rem 1.5rem;">
+                    Export to Excel
+                </button>
+            </div>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>កាលបរិច្ឆេទ</th>
+                            <th>អតិថិជន</th>
+                            <th>ផលិតផល</th>
+                            <th>អាសយដ្ឋាន</th>
+                            <th>បុគ្គលិក</th>
+                            <th>សរុប</th>
+                            <th>ដឹក</th>
+                            <th>ចំណូល</th>
+                            <th>ស្ថានភាព</th>
+                            <th>សកម្មភាព</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTable"></tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Staff Summary -->
+        <div id="staffSummary" class="tab" style="display:none">
+            <h2 style="text-align:center;margin:2rem 0;color:var(--primary);font-size:2rem;font-weight:bold;">
+                សង្ខេបការលក់តាមបុគ្គលិក
+                <small style="font-size:0.7rem;color:#e74c3c;display:block;margin-top:0.5rem;">
+                    ធ្វើបច្ចុប្បន្នភាព: <span id="updateTime"></span>
+                </small>
+            </h2>
+            <div class="staff-summary-controls">
+                <button onclick="switchStaffView('cards')" class="active" id="btnCards">កាត</button>
+                <button onclick="switchStaffView('table')" id="btnTable">តារាងលម្អិត</button>
+            </div>
+            <div style="text-align:center;margin:1.5rem 0;display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;">
+                <button onclick="exportStaffAll()" class="btn btn-success" style="padding:1rem 2rem;font-size:1.1rem;">
+                    Export Excel (ទាំងអស់)
+                </button>
+                <div style="display:flex;gap:0.5rem;align-items:center;">
+                    <select id="staffExportSelect" style="padding:0.9rem 1.2rem;border-radius:50px;border:2px solid var(--primary);font-size:1rem;">
+                        <option value="">ជ្រើសបុគ្គលិក</option>
+                    </select>
+                    <button onclick="exportStaffSingle()" class="btn btn-success" style="padding:0.9rem 1.5rem;">
+                        Export 1 នាក់
+                    </button>
+                </div>
+            </div>
+            <div id="staffDetailCards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:1.8rem;margin-top:2rem;"></div>
+            <div id="staffDetailTableContainer" style="display:none;">
+                <table id="staffDetailTable">
+                    <thead>
+                        <tr>
+                            <th>បុគ្គលិក</th>
+                            <th>ចំនួនលក់</th>
+                            <th>ទំនិញលក់បាន</th>
+                            <th>តម្លៃសរុប</th>
+                            <th>ដឹកជញ្ជូន</th>
+                            <th>ទូទាត់សរុប</th>
+                            <th>មិនទូទាត់សរុប</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Setting Modal -->
+    <div class="modal" id="settingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>កំណត់ការណ៍</h2>
+                <button class="close-btn" onclick="closeSetting()">x</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label style="font-weight:bold;color:var(--primary);">Dark Mode</label>
+                    <div style="display:flex;align-items:center;gap:1rem;margin-top:0.5rem;">
+                        <input type="checkbox" id="darkModeToggle">
+                        <label for="darkModeToggle">បើក Dark Mode</label>
+                    </div>
+                </div>
+                <div style="margin:1.5rem 0;">
+                    <label style="font-weight:bold;color:var(--primary);">បុគ្គលិក</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:1rem 0;" id="staffList"></div>
+                    <div style="display:flex;gap:0.5rem;">
+                        <input type="text" id="newStaff" placeholder="ឈ្មោះបុគ្គលិក" style="flex:1;padding:0.8rem;border:2px solid #ddd;border-radius:8px;">
+                        <button class="btn btn-success" onclick="addStaff()">បន្ថែម</button>
+                    </div>
+                </div>
+                <div style="margin:1.5rem 0;">
+                    <label style="font-weight:bold;color:var(--primary);">ប្រភេទទំនិញ</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin:1rem 0;" id="catTags"></div>
+                    <div style="display:flex;gap:0.5rem;">
+                        <input type="text" id="newCategory" placeholder="ប្រភេទថ្មី" style="flex:1;padding:0.8rem;border:2px solid #ddd;border-radius:8px;">
+                        <button class="btn btn-success" onclick="addCategory()">បន្ថែម</button>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:1.5rem;text-align:center;">
+                <button class="btn btn-success" onclick="saveSetting()" style="padding:1rem 3rem;">រក្សាទុក</button>
+            </div>
+        </div>
+    </div>
+    <audio id="checkoutSound" src="https://assets.mixkit.co/sfx/preview/mixkit-confirmation-tone-2353.mp3"></audio>
 
-    function addToCart(id) {
-      const p = products.find(x => x.id === id);
-      const qtyInput = document.getElementById(`qty-${id}`);
-      const qty = parseInt(qtyInput?.value) || 1;
-      if (!p || p.stock < qty) { showSyncStatus('ស្តុកមិនគ្រប់!', 'error'); return; }
-      const item = cart.find(x => x.id === id);
-      if (item) {
-        if (item.qty + qty <= p.stock) item.qty += qty;
-        else { showSyncStatus('ស្តុកមិនគ្រប់សម្រាប់ការបនថែម!', 'error'); return; }
-      } else {
-        cart.push({ ...p, qty });
-      }
-      p.stock -= qty;
-      if (qtyInput) qtyInput.value = 1;
-      renderProductOrder();
-      renderProducts();
-      renderCart();
-      syncToCloud();
-      showSyncStatus('បន្ថែមទៅរទេះជោគជ័យ!', 'success');
-    }
+    <script>
+        // === Supabase Client ===
+        const SUPABASE_URL = 'https://royujtnrhouipyaqouvl.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJveXVqdG5yaG91aXB5YXFvdXZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0NDA0NDQsImV4cCI6MjA3ODAxNjQ0NH0.IstiTm1tZrr4_F3HQR9FNJurljeoqffdeVOcBRRl2TA';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    function renderProducts() {
-      const tbody = document.getElementById('productTableBody');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      const search = els.searchProduct?.value.toLowerCase() || '';
-      const filtered = products.filter(p => p.name.toLowerCase().includes(search));
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#999;">${translations[currentLang].noItems}</td></tr>`;
-        return;
-      }
-      filtered.forEach(p => {
-        const stockClass = p.stock <= 0 ? 'out' : p.stock <= 3 ? 'low' : '';
-        const stockText = settings.showStock ? `<span class="stock ${stockClass}">${p.stock > 0 ? p.stock : translations[currentLang].noItems}</span>` : 'N/A';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${p.name}</td>
-          <td>₩${p.price}</td>
-          <td>${stockText}</td>
-          <td>
-            <button onclick="editProduct('${p.id}')" style="background:#3498db;padding:3px 6px;font-size:0.7rem;margin-right:5px;">${translations[currentLang].edit}</button>
-            <button onclick="deleteProduct('${p.id}')" style="background:var(--danger);padding:3px 6px;font-size:0.7rem;">${translations[currentLang].delete}</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
+        let products = [], cart = [], orders = [], settings = {};
 
-    function deleteProduct(id) {
-      products = products.filter(p => p.id !== id);
-      cart = cart.filter(item => item.id !== id);
-      renderProductOrder();
-      renderProducts();
-      renderCart();
-      syncToCloud();
-      showSyncStatus('លុបទំនិញជោគជ័យ!', 'success');
-    }
+        // === Load Data ===
+        async function loadData() {
+            try {
+                const [prodRes, ordRes, settRes] = await Promise.all([
+                    supabase.from('products').select('*').order('created_at', { ascending: false }),
+                    supabase.from('orders').select('*').order('time', { ascending: false }),
+                    supabase.from('settings').select('*').limit(1)
+                ]);
 
-    function editProduct(id) {
-      const p = products.find(x => x.id === id);
-      if (!p) return;
-      els.navButtons.forEach(b => b.classList.remove('active'));
-      document.querySelector('nav button[data-section="add-product"]')?.classList.add('active');
-      els.sections.forEach(s => s.classList.remove('active'));
-      document.getElementById('add-product')?.classList.add('active');
-      if (els.newProductName) els.newProductName.value = p.name;
-      if (els.newProductPrice) els.newProductPrice.value = p.price;
-      if (els.newProductStock) els.newProductStock.value = p.stock;
-      if (els.uploadArea) els.uploadArea.innerHTML = `<img src="${p.image}" style="width:100%;height:150px;object-fit:cover;border-radius:8px;">`;
-      if (els.addProductBtn) {
-        els.addProductBtn.textContent = 'រក្សាទុក';
-        els.addProductBtn.dataset.editId = id;
-      }
-    }
+                products = prodRes.data || [];
+                orders = ordRes.data || [];
+                settings = settRes.data?.[0] || { dark_mode: false, delivery_fee: 5000, staff: [], categories: [] };
 
-    function updateCartQty(id, qty) {
-      qty = parseInt(qty) || 0;
-      const item = cart.find(x => x.id === id);
-      const p = products.find(x => x.id === id);
-      if (!item || !p) return;
-      const diff = qty - item.qty;
-      if (diff > 0 && p.stock < diff) { showSyncStatus('ស្តុកមិនគ្រប់!', 'error'); qty = item.qty + p.stock; }
-      item.qty = qty;
-      p.stock += (item.qty - qty);
-      if (qty === 0) cart = cart.filter(x => x.id !== id);
-      renderProductOrder();
-      renderProducts();
-      renderCart();
-    }
-
-    function removeFromCart(id) {
-      const item = cart.find(x => x.id === id);
-      const p = products.find(x => x.id === id);
-      if (item && p) p.stock += item.qty;
-      cart = cart.filter(x => x.id !== id);
-      renderProductOrder();
-      renderProducts();
-      renderCart();
-      syncToCloud();
-    }
-
-    function renderCart() {
-      const container = els.cartItems;
-      if (!container) return;
-      container.innerHTML = '';
-      let total = 0;
-      cart.forEach(item => {
-        const subtotal = item.price * item.qty;
-        total += subtotal;
-        const div = document.createElement('div');
-        div.className = 'cart-item';
-        div.innerHTML = `
-          <img src="${item.image}" alt="${item.name}">
-          <div style="flex:1;">
-            <div style="font-weight:600;">${item.name}</div>
-            <div>₩${item.price} × <input type="number" value="${item.qty}" min="0" style="width:50px;" onchange="updateCartQty('${item.id}', this.value)"></div>
-          </div>
-          <div style="font-weight:600;">₩${subtotal}</div>
-          <button onclick="removeFromCart('${item.id}')" style="background:var(--danger);padding:5px 8px;font-size:0.8rem;">×</button>
-        `;
-        container.appendChild(div);
-      });
-      const delivery = parseInt(els.deliveryFee?.value) || 0;
-      const net = Math.max(0, total - delivery);
-      if (els.cartTotal) {
-        els.cartTotal.innerHTML = `
-          <div class="total-row"><span>${translations[currentLang].total}</span><span>₩${total}</span></div>
-          <div class="total-row"><span>${translations[currentLang].delivery}</span><span>₩${delivery}</span></div>
-          <div class="total-row final"><span>${translations[currentLang].net}</span><span>₩${net}</span></div>
-        `;
-      }
-      if (els.generateReceiptBtn) els.generateReceiptBtn.style.display = cart.length > 0 ? 'block' : 'none';
-    }
-
-    function checkout() {
-      const name = els.customerName?.value.trim();
-      const phone = els.customerPhone?.value.trim();
-      const address = els.customerAddress?.value.trim() || 'មិនបានបញ្ជាក់';
-      const paymentMethod = els.paymentMethod?.value;
-      if (cart.length === 0) return showSyncStatus('រទេះទទេ!', 'error');
-      if (!name || !phone || !paymentMethod) return showSyncStatus('បំពេញព័ត៌មាន!', 'error');
-      cart.forEach(item => {
-        const p = products.find(x => x.id === item.id);
-        if (p) p.stock -= item.qty;
-      });
-      const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-      const delivery = parseInt(els.deliveryFee?.value) || 0;
-      const order = {
-        id: Date.now().toString(),
-        date: new Date().toISOString(),
-        customer: { name, phone, address },
-        staff: settings.staffName || translations[currentLang].noStaff,
-        items: cart.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty })),
-        total, delivery, net: total - delivery, paymentMethod
-      };
-      orders.unshift(order);
-      cart = [];
-      if (els.customerName) els.customerName.value = '';
-      if (els.customerPhone) els.customerPhone.value = '';
-      if (els.customerAddress) els.customerAddress.value = '';
-      if (els.paymentMethod) els.paymentMethod.value = 'paid';
-      renderProductOrder();
-      renderProducts();
-      renderCart();
-      renderOrders();
-      renderOnlineOrders();
-      updateSummary();
-      syncToCloud();
-      showSyncStatus('បញ្ជាទិញជោគជ័យ! ស្តុកត្រូវបានដក', 'success');
-      if (els.generateReceiptBtn) {
-        els.generateReceiptBtn.style.display = 'block';
-        els.generateReceiptBtn.onclick = () => generateReceipt(order);
-      }
-    }
-
-    function renderOrders() {
-      const tbody = els.orderTableBody;
-      if (!tbody) return;
-      tbody.innerHTML = '';
-      const search = els.searchOrder?.value.toLowerCase() || '';
-      const filtered = orders.filter(o =>
-        o.customer.name.toLowerCase().includes(search) ||
-        o.customer.phone.includes(search) ||
-        (o.customer.address || '').toLowerCase().includes(search) ||
-        (o.staff || '').toLowerCase().includes(search) ||
-        o.items.some(i => i.name.toLowerCase().includes(search))
-      );
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;color:#999;">${translations[currentLang].noItems}</td></tr>`;
-        return;
-      }
-      filtered.forEach(o => {
-        const tr = document.createElement('tr');
-        const items = o.items.map(i => `${i.name}×${i.qty}`).join(', ');
-        const paymentText = o.paymentMethod === 'paid' ? translations[currentLang].paymentPaid : translations[currentLang].paymentUnpaid;
-        tr.innerHTML = `
-          <td>${o.id.slice(-6)}</td>
-          <td>${new Date(o.date).toLocaleString()}</td>
-          <td>${o.customer.name}<br><small>${o.customer.phone}</small></td>
-          <td><small>${o.customer.address}</small></td>
-          <td>${o.staff}</td>
-          <td style="font-size:0.8rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${items}">${items}</td>
-          <td>₩${o.total}</td>
-          <td>₩${o.delivery}</td>
-          <td>₩${o.net}</td>
-          <td>${paymentText}</td>
-          <td style="white-space:nowrap;">
-            <button onclick="editOrder('${o.id}')" style="background:#3498db;padding:3px 6px;font-size:0.7rem;margin-right:5px;">
-              ${translations[currentLang].edit}
-            </button>
-            <button onclick="deleteOrder('${o.id}')" style="background:var(--danger);padding:3px 6px;font-size:0.7rem;">
-              ${translations[currentLang].delete}
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function deleteOrder(id) {
-      const order = orders.find(o => o.id === id);
-      if (!order) return;
-      restoreStock(order);
-      orders = orders.filter(o => o.id !== id);
-      renderOrders();
-      renderOnlineOrders();
-      renderProductOrder();
-      renderProducts();
-      updateSummary();
-      syncToCloud();
-      showSyncStatus('លុបជោគជ័យ! ស្តុកត្រូវបានបូកវិញ', 'success');
-    }
-
-    function editOrder(id) {
-      const order = orders.find(o => o.id === id);
-      if (!order) return;
-      restoreStock(order);
-      els.navButtons.forEach(b => b.classList.remove('active'));
-      document.querySelector('nav button[data-section="cart"]')?.classList.add('active');
-      els.sections.forEach(s => s.classList.remove('active'));
-      document.getElementById('cart')?.classList.add('active');
-      cart = order.items.map(item => ({ ...item }));
-      if (els.customerName) els.customerName.value = order.customer.name;
-      if (els.customerPhone) els.customerPhone.value = order.customer.phone;
-      if (els.customerAddress) els.customerAddress.value = order.customer.address;
-      if (els.paymentMethod) els.paymentMethod.value = order.paymentMethod;
-      if (els.deliveryFee) els.deliveryFee.value = order.delivery;
-      orders = orders.filter(o => o.id !== id);
-      showSyncStatus('កំពុងកែ — ស្តុកត្រូវបានបូកវិញ', 'success');
-      renderProductOrder();
-      renderProducts();
-      renderCart();
-      renderOrders();
-      updateSummary();
-      syncToCloud();
-    }
-
-    function generateColors(count) {
-      const colors = [];
-      for (let i = 0; i < count; i++) {
-        const hue = (i * 360 / count) % 360;
-        colors.push(`hsl(${hue}, 70%, 50%)`);
-      }
-      return colors;
-    }
-
-    function renderStaffSummary() {
-      if (!els.staffSummary) return;
-      const staffMap = {};
-      orders.forEach(o => {
-        const staff = o.staff || translations[currentLang].noStaff;
-        if (!staffMap[staff]) {
-          staffMap[staff] = { total: 0, count: 0, paid: 0, unpaid: 0 };
+                applySettings();
+                renderAll();
+            } catch (err) {
+                console.error(err);
+                alert("មានបញ្ហាភ្ជាប់ Supabase: " + err.message);
+            }
         }
-        staffMap[staff].total += o.total;
-        staffMap[staff].count += 1;
-        if (o.paymentMethod === 'paid') staffMap[staff].paid += o.total;
-        else staffMap[staff].unpaid += o.total;
-      });
-      let html = '';
-      Object.keys(staffMap).forEach(staff => {
-        const s = staffMap[staff];
-        html += `
-          <div class="staff-card">
-            <h4>${staff}</h4>
-            <div>₩${s.total} <small>(${translations[currentLang].staffTotalSales})</small></div>
-            <div>${s.count} <small>(${translations[currentLang].staffOrderCount})</small></div>
-            <div class="value">₩${s.paid} <small>(${translations[currentLang].staffPaid})</small></div>
-            <div class="value unpaid">₩${s.unpaid} <small>(${translations[currentLang].staffUnpaid})</small></div>
-          </div>
-        `;
-      });
-      if (!html) {
-        html = `<p style="grid-column:1/-1;text-align:center;color:#999;">${translations[currentLang].noItems}</p>`;
-      }
-      els.staffSummary.innerHTML = html;
-    }
 
-    function updateSummary() {
-      const totalSales = orders.reduce((s, o) => s + o.total, 0);
-      const totalDelivery = orders.reduce((s, o) => s + o.delivery, 0);
-      const netSales = totalSales - totalDelivery;
-      if (els.totalSales) els.totalSales.textContent = `₩${totalSales}`;
-      if (els.orderCount) els.orderCount.textContent = orders.length;
-      if (els.totalDelivery) els.totalDelivery.textContent = `₩${totalDelivery}`;
-      if (els.netSales) els.netSales.textContent = `₩${netSales}`;
-      updatePieChart(totalSales, totalDelivery, netSales);
-      updateBarChart(totalSales, orders.length, orders.reduce((s, o) => s + o.items.reduce((t, i) => t + i.qty, 0), 0), totalDelivery, netSales);
-      renderStaffSummary();
-    }
-
-    function updatePieChart(totalSales, totalDelivery, netSales) {
-      const labels = [translations[currentLang].sumTotalSales, translations[currentLang].sumTotalDelivery, translations[currentLang].sumNetSales];
-      const data = [totalSales, totalDelivery, netSales];
-      const colors = generateColors(data.length);
-      if (pieChart) pieChart.destroy();
-      if (pieCtx) pieChart = new Chart(pieCtx, { type: 'pie', data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
-    }
-
-    function updateBarChart(totalSales, orderCount, soldItems, totalDelivery, netSales) {
-      const labels = [translations[currentLang].sumTotalSales, translations[currentLang].sumOrderCount, translations[currentLang].sumSoldItems, translations[currentLang].sumTotalDelivery, translations[currentLang].sumNetSales];
-      const data = [totalSales, orderCount, soldItems, totalDelivery, netSales];
-      const colors = generateColors(data.length);
-      if (barChart) barChart.destroy();
-      if (barCtx) barChart = new Chart(barCtx, { type: 'bar', data: { labels, datasets: [{ label: 'Metrics', data, backgroundColor: colors, borderWidth: 1 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } } });
-    }
-
-    function handleImageUpload(e) {
-      const file = e.target.files[0];
-      if (!file || !els.uploadArea) return;
-      const reader = new FileReader();
-      reader.onload = ev => { els.uploadArea.innerHTML = `<img src="${ev.target.result}" style="width:100%;height:150px;object-fit:cover;border-radius:8px;">`; };
-      reader.readAsDataURL(file);
-    }
-
-    function addProductHandler() {
-      const name = els.newProductName?.value.trim();
-      const price = parseInt(els.newProductPrice?.value) || 0;
-      const stock = parseInt(els.newProductStock?.value) || 0;
-      const img = els.uploadArea?.querySelector('img')?.src || 'https://via.placeholder.com/150?text=No+Image';
-      if (!name || price <= 0) { showSyncStatus('បំពេញទិន្នន័យ!', 'error'); return; }
-      const editId = els.addProductBtn?.dataset.editId;
-      if (editId) {
-        const idx = products.findIndex(p => p.id === editId);
-        if (idx > -1) products[idx] = { ...products[idx], name, price, stock, image: img };
-        showSyncStatus('កែទំនិញជោគជ័យ!', 'success');
-        delete els.addProductBtn.dataset.editId;
-        if (els.addProductBtn) els.addProductBtn.textContent = translations[currentLang].addProductBtn;
-      } else {
-        products.push({ id: Date.now().toString(), name, price, stock, image: img });
-        showSyncStatus('បញ្ចូលទំនិញជោគជ័យ!', 'success');
-      }
-      if (els.newProductName) els.newProductName.value = '';
-      if (els.newProductPrice) els.newProductPrice.value = '';
-      if (els.newProductStock) els.newProductStock.value = '10';
-      if (els.uploadArea) els.uploadArea.innerHTML = `<i class="fas fa-cloud-upload-alt" style="font-size:2rem; color:#999;"></i><p>${translations[currentLang].uploadText}</p><input type="file" id="productImage" accept="image/*" hidden/>`;
-      els.productImage = document.getElementById('productImage');
-      if (els.productImage) els.productImage.addEventListener('change', handleImageUpload);
-      renderProductOrder();
-      renderProducts();
-      renderCart();
-      syncToCloud();
-    }
-
-    async function syncToCloud() {
-      if (!settings.cloudSync) return;
-      try {
-        const { error } = await supabase
-          .from('store_data')
-          .upsert({
-            id: 1,
-            products: products,
-            orders: orders,
-            updated_at: new Date().toISOString()
-          }, { onConflict: 'id' });
-        if (error) throw error;
-        showSyncStatus(translations[currentLang].syncSuccess, 'success');
-      } catch (err) {
-        showSyncStatus(translations[currentLang].syncError, 'error');
-      }
-    }
-
-    async function loadFromCloud() {
-      try {
-        const { data, error } = await supabase
-          .from('store_data')
-          .select('products, orders')
-          .eq('id', 1)
-          .single();
-        if (error && error.code !== 'PGRST116') throw error;
-        if (data) {
-          products = data.products || [];
-          orders = data.orders || [];
+        // === Save Settings ===
+        async function saveSetting() {
+            settings.dark_mode = document.getElementById('darkModeToggle').checked;
+            try {
+                const { error } = settings.id
+                    ? await supabase.from('settings').update(settings).eq('id', settings.id)
+                    : await supabase.from('settings').insert([settings]).select();
+                if (error) throw error;
+                applySettings();
+                alert("រក្សាទុកជោគជ័យ!");
+                closeSetting();
+            } catch (err) {
+                alert("រក្សាទុកបរាជ័យ: " + err.message);
+            }
         }
-      } catch (err) { console.warn('Load failed:', err); }
-      renderProductOrder();
-      renderProducts();
-      renderCart();
-      renderOrders();
-      renderOnlineOrders();
-      updateSummary();
-    }
 
-    function renderOnlineOrders() {
-      const section = document.getElementById('online-order');
-      if (!section) return;
-      const onlineOrders = orders.filter(o => o.staff && o.staff.trim().toLowerCase() === 'online');
-      let html = `<h2>${translations[currentLang].titleOnlineOrder}</h2>`;
-      if (onlineOrders.length === 0) {
-        html += `<p style="text-align:center;color:#999;">${translations[currentLang].noOnlineOrders}</p>`;
-      } else {
-        html += `<div style="overflow-x:auto; margin-top:10px;"><table style="width:100%; font-size:0.85rem;"><thead><tr><th>ID</th><th>កាលបរិច្ឆេទ</th><th>អតិថិជន</th><th>ទីតាំង</th><th>ទំនិញ</th><th>សរុប</th><th>ដឹក</th><th>សុទ្ធ</th><th>វិធីបង់</th></tr></thead><tbody>`;
-        onlineOrders.forEach(o => {
-          const items = o.items.map(i => `${i.name}×${i.qty}`).join(', ');
-          const paymentText = o.paymentMethod === 'paid' ? translations[currentLang].paymentPaid : translations[currentLang].paymentUnpaid;
-          html += `<tr><td>${o.id.slice(-6)}</td><td>${new Date(o.date).toLocaleString()}</td><td>${o.customer.name}<br><small>${o.customer.phone}</small></td><td><small>${o.customer.address}</small></td><td style="font-size:0.75rem;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${items}">${items}</td><td>₩${o.total}</td><td>₩${o.delivery}</td><td>₩${o.net}</td><td>${paymentText}</td></tr>`;
-        });
-        html += `</tbody></table></div>`;
-      }
-      section.innerHTML = html;
-    }
+        // === Save Products ===
+        async function saveProducts() {
+            if (products.length === 0) return;
+            try {
+                const { error } = await supabase.from('products').upsert(products);
+                if (error) throw error;
+            } catch (err) { console.error(err); }
+        }
 
-    // ========== Event Listeners ==========
-    els.navButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        els.navButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        els.sections.forEach(s => s.classList.remove('active'));
-        const section = document.getElementById(btn.dataset.section);
-        if (section) section.classList.add('active');
-        setTimeout(() => { pieChart?.resize(); barChart?.resize(); }, 100);
-      });
-    });
-    els.checkoutBtn?.addEventListener('click', checkout);
-    els.searchOrder?.addEventListener('input', renderOrders);
-    els.searchBtn?.addEventListener('click', renderOrders);
-    els.saveSettings?.addEventListener('click', saveSettings);
-    els.syncToCloud?.addEventListener('click', syncToCloud);
-    els.darkModeToggle?.addEventListener('change', () => applyDarkMode(els.darkModeToggle.checked));
-    els.langSwitch?.addEventListener('change', () => applyLanguage(els.langSwitch.value));
-    els.uploadArea?.addEventListener('click', () => els.productImage?.click());
-    els.productImage?.addEventListener('change', handleImageUpload);
-    els.searchProduct?.addEventListener('input', renderProducts);
-    els.searchProductBtn?.addEventListener('click', renderProducts);
-    els.addProductBtn?.addEventListener('click', addProductHandler);
-    els.exportProductsBtn?.addEventListener('click', exportProductsToExcel);
-    els.exportOrdersBtn?.addEventListener('click', exportOrdersToExcel);
+        // === Save Orders ===
+        async function saveOrders() {
+            if (orders.length === 0) return;
+            try {
+                const { error } = await supabase.from('orders').upsert(orders);
+                if (error) throw error;
+            } catch (err) { console.error(err); }
+        }
 
-    // ========== Initialize ==========
-    async function init() {
-      applyLanguage(currentLang);
-      applyDarkMode(settings.darkModeDefault || isDark);
-      applyThemeColor(settings.themeColor);
-      if (els.settingStoreName) els.settingStoreName.value = settings.storeName;
-      if (els.settingAdminName) els.settingAdminName.value = settings.adminName;
-      if (els.settingStaffName) els.settingStaffName.value = settings.staffName;
-      if (els.settingCurrencyRate) els.settingCurrencyRate.value = settings.currencyRate;
-      if (els.settingDefaultDelivery) els.settingDefaultDelivery.value = settings.defaultDelivery;
-      if (els.settingThemeColor) els.settingThemeColor.value = settings.themeColor;
-      if (els.settingDarkModeDefault) els.settingDarkModeDefault.checked = settings.darkModeDefault;
-      if (els.settingMaintenanceMode) els.settingMaintenanceMode.checked = settings.maintenanceMode;
-      if (els.settingShowStock) els.settingShowStock.checked = settings.showStock;
-      if (els.settingCloudSync) els.settingCloudSync.checked = settings.cloudSync;
-      await loadFromCloud();
-    }
-    init();
-  </script>
+        // === Save All ===
+        async function saveData() {
+            await Promise.all([saveProducts(), saveOrders(), saveSetting()]);
+        }
+
+        // === Render Functions ===
+        function applySettings() {
+            document.body.classList.toggle('dark-mode', settings.dark_mode);
+            document.getElementById('darkModeToggle').checked = settings.dark_mode;
+            document.getElementById('deliveryFeeShow').innerText = (settings.delivery_fee || 5000).toLocaleString();
+            renderCategories();
+            renderStaff();
+            renderCatTags();
+        }
+
+        function renderCategories() {
+            const cats = settings.categories || [];
+            const filter = document.getElementById('categoryFilter');
+            const add = document.getElementById('pCategory');
+            filter.innerHTML = `<option value="">ទាំងអស់</option>` + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+            add.innerHTML = `<option value="">ជ្រើសរើសប្រភេទ</option>` + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        function renderStaff() {
+            const staff = settings.staff || [];
+            const div = document.getElementById('staffList');
+            div.innerHTML = staff.map(s => `
+                <span style="background:var(--primary);color:white;padding:0.5rem 1rem;border-radius:20px;display:inline-flex;align-items:center;gap:0.5rem;">
+                    ${s} <button onclick="removeStaff('${s}')" style="background:none;border:none;color:white;cursor:pointer;">x</button>
+                </span>
+            `).join('');
+            const select = document.getElementById('salesPerson');
+            select.innerHTML = `<option value="">ជ្រើសរើសបុគ្គលិកលក់</option>` + staff.map(s => `<option value="${s}">${s}</option>`).join('');
+            const staffFilter = document.getElementById('staffFilter');
+            staffFilter.innerHTML = `<option value="">ទាំងអស់</option>` + staff.map(s => `<option value="${s}">${s}</option>`).join('');
+            const exportSelect = document.getElementById('staffExportSelect');
+            exportSelect.innerHTML = `<option value="">ជ្រើសបុគ្គលិក</option>` + staff.map(s => `<option value="${s}">${s}</option>`).join('');
+        }
+
+        function renderCatTags() {
+            const div = document.getElementById('catTags');
+            div.innerHTML = (settings.categories || []).map(c => `
+                <span style="background:var(--primary);color:white;padding:0.5rem 1rem;border-radius:20px;display:inline-flex;align-items:center;gap:0.5rem;">
+                    ${c} <button onclick="removeCategory('${c}')" style="background:none;border:none;color:white;cursor:pointer;">x</button>
+                </span>
+            `).join('');
+        }
+
+        async function addStaff() {
+            const name = document.getElementById('newStaff').value.trim();
+            if (name && !settings.staff.includes(name)) {
+                settings.staff.push(name);
+                renderStaff();
+                document.getElementById('newStaff').value = '';
+                await saveData();
+            }
+        }
+
+        async function removeStaff(name) {
+            if (confirm(`លុប "${name}" ចេញពីបុគ្គលិកមែនទេ?`)) {
+                settings.staff = settings.staff.filter(s => s !== name);
+                renderStaff();
+                await saveData();
+            }
+        }
+
+        async function addCategory() {
+            const name = document.getElementById('newCategory').value.trim();
+            if (name && !settings.categories.includes(name)) {
+                settings.categories.push(name);
+                renderCatTags();
+                renderCategories();
+                document.getElementById('newCategory').value = '';
+                await saveData();
+            }
+        }
+
+        async function removeCategory(name) {
+            settings.categories = settings.categories.filter(c => c !== name);
+            renderCatTags();
+            renderCategories();
+            await saveData();
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.style.display = 'none');
+            document.getElementById(tabName).style.display = 'block';
+            document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+            document.querySelector(`button[onclick="showTab('${tabName}')"]`).classList.add('active');
+
+            if (tabName === 'products') filterProducts();
+            if (tabName === 'cart') { renderCart(); updateSummary(); }
+            if (tabName === 'orders') renderOrders();
+            if (tabName === 'staffSummary') { renderStaffSummary(); switchStaffView('cards'); }
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const selectedCategory = document.getElementById('categoryFilter').value;
+            const filtered = products.filter(p => {
+                const matchName = p.name.toLowerCase().includes(query);
+                const matchCategory = !selectedCategory || p.category === selectedCategory;
+                return matchName && matchCategory;
+            });
+            renderProducts(filtered);
+            document.getElementById('clearSearchBtn').style.display = query ? 'block' : 'none';
+        }
+
+        function renderProducts(arr = products) {
+            const list = document.getElementById('productList');
+            list.innerHTML = arr.map((p, i) => {
+                const idx = products.indexOf(p);
+                return `
+                    <div class="product-card">
+                        ${p.stock < 5 ? '<div class="low-stock-badge">ស្តុកទាប!</div>' : ''}
+                        <img src="${p.image || 'https://via.placeholder.com/300x160?text=គ្មានរូប'}">
+                        <div style="padding:1rem;position:relative;">
+                            <h3 style="font-size:1.1rem;margin-bottom:0.5rem;">${p.name}</h3>
+                            ${p.category ? `<small style="background:var(--primary);color:white;padding:0.2rem 0.5rem;border-radius:10px;">${p.category}</small>` : ''}
+                            <p style="font-size:1.4rem;color:var(--primary);font-weight:bold;margin:0.5rem 0;">${p.price.toLocaleString()} ₩</p>
+                            <p style="color:#7f8c8d;font-size:0.9rem;">ស្តុក: ${p.stock}</p>
+                            <button class="btn btn-success" onclick="addToCart(${idx})" ${p.stock === 0 ? 'disabled' : ''}>
+                                ${p.stock === 0 ? 'អស់ស្តុក' : 'បញ្ចូលរទេះ'}
+                            </button>
+                            <div style="display:flex;gap:0.5rem;margin-top:0.8rem;">
+                                <button class="btn" style="background:#3498db;color:white;flex:1;" onclick="editProduct(${idx})">កែ</button>
+                                <button class="btn" style="background:#e74c3c;color:white;flex:1;" onclick="deleteProduct(${idx})">លុប</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('') || `<p style="grid-column:1/-1;text-align:center;color:#999;font-size:1.5rem;margin:3rem;">រទេះទទេ</p>`;
+        }
+
+        async function editProduct(idx) {
+            const p = products[idx];
+            const newName = prompt("ឈ្មោះថ្មី:", p.name);
+            if (newName === null) return;
+            const newPrice = prompt("តម្លៃថ្មី (₩):", p.price);
+            if (newPrice === null) return;
+            const newStock = prompt("ចំនួនស្តុកថ្មី:", p.stock);
+            if (newStock === null) return;
+
+            if (newName.trim() && !isNaN(newPrice) && !isNaN(newStock)) {
+                p.name = newName.trim();
+                p.price = parseInt(newPrice);
+                p.stock = parseInt(newStock);
+                await saveData();
+                renderProducts();
+                alert("កែប្រែជោគជ័យ!");
+            }
+        }
+
+        async function deleteProduct(idx) {
+            if (confirm(`លុប "${products[idx].name}" ចេញពីស្តុកមែនទេ?`)) {
+                const { error } = await supabase.from('products').delete().eq('id', products[idx].id);
+                if (error) throw error;
+                products.splice(idx, 1);
+                renderProducts();
+                alert("លុបជោគជ័យ!");
+            }
+        }
+
+        function addToCart(i) {
+            if (products[i].stock > 0) {
+                const item = { ...products[i], qty: 1 };
+                cart.push(item);
+                products[i].stock--;
+                saveData();
+                renderProducts();
+                playSound();
+            }
+        }
+
+        function renderCart() {
+            const div = document.getElementById('cartItems');
+            div.innerHTML = cart.map((item, i) => `
+                <div style="display:flex;gap:1rem;margin:1rem 0;padding:1rem;background:#f8f9fa;border-radius:15px;align-items:center;">
+                    <img src="${item.image || 'https://via.placeholder.com/80'}" style="width:80px;height:80px;object-fit:cover;border-radius:10px;">
+                    <div style="flex:1;">
+                        <h4>${item.name}</h4>
+                        <b>${item.price.toLocaleString()} ₩ × ${item.qty}</b>
+                    </div>
+                    <div>
+                        <button onclick="changeQty(${i},-1)">-</button>
+                        <b style="margin:0 0.5rem;">${item.qty}</b>
+                        <button onclick="changeQty(${i},1)">+</button>
+                        <button onclick="removeFromCart(${i})" style="background:#e74c3c;color:white;margin-left:0.5rem;padding:0.3rem 0.8rem;border-radius:5px;">លុប</button>
+                    </div>
+                </div>
+            `).join('') || `<p style="text-align:center;color:#999;font-size:1.5rem;">រទេះទទេ</p>`;
+            updateSummary();
+        }
+
+        function changeQty(i, d) {
+            cart[i].qty += d;
+            if (cart[i].qty <= 0) cart.splice(i, 1);
+            renderCart();
+        }
+
+        function removeFromCart(i) {
+            const item = cart[i];
+            const prod = products.find(p => p.name === item.name);
+            if (prod) prod.stock += item.qty;
+            cart.splice(i, 1);
+            saveData();
+            renderCart();
+        }
+
+        function updateSummary() {
+            const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+            const disc = parseFloat(document.getElementById('discountPercent').value) || 0;
+            const discountAmount = subtotal * (disc / 100);
+            const finalTotal = subtotal - discountAmount + (settings.delivery_fee || 5000);
+            document.getElementById('subtotal').innerText = subtotal.toLocaleString();
+            document.getElementById('discountAmount').innerText = discountAmount.toLocaleString();
+            document.getElementById('finalTotal').innerText = finalTotal.toLocaleString();
+        }
+
+        async function checkout() {
+            if (cart.length === 0) return alert('រទេះទទេ!');
+            const salesPerson = document.getElementById('salesPerson').value || 'មិនបានជ្រើស';
+            const customer = {
+                name: document.getElementById('customerName').value || 'អតិថិជនទូទៅ',
+                phone: document.getElementById('customerPhone').value,
+                address: document.getElementById('customerAddress').value,
+                discount: parseFloat(document.getElementById('discountPercent').value) || 0,
+                salesPerson
+            };
+            const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
+            const discountAmount = subtotal * (customer.discount / 100);
+            const finalTotal = subtotal - discountAmount + (settings.delivery_fee || 5000);
+            const newOrder = {
+                time: new Date().toISOString(),
+                customer,
+                items: [...cart],
+                subtotal, discount_amount: discountAmount, final_total: finalTotal,
+                paid: document.getElementById('paidStatus').checked
+            };
+            const { data, error } = await supabase.from('orders').insert([newOrder]).select();
+            if (error) throw error;
+            cart = [];
+            await saveData();
+            renderAll();
+            playSound();
+            alert(`ជោគជ័យ!\nសរុប: ${finalTotal.toLocaleString()} ₩\nស្ថានភាព: ${document.getElementById('paidStatus').checked ? 'ទូទាត់រួច' : 'មិនទាន់ទូទាត់'}`);
+            showTab('staffSummary');
+        }
+
+        function renderOrders() {
+            const tbody = document.getElementById('ordersTable');
+            const selectedStaff = document.getElementById('staffFilter').value;
+            const filtered = selectedStaff ? orders.filter(o => o.customer.salesPerson === selectedStaff) : orders;
+            tbody.innerHTML = filtered.map((o, i) => {
+                const items = o.items.map(it => `${it.name}×${it.qty}`).join(', ');
+                const originalIndex = orders.indexOf(o);
+                return `
+                    <tr>
+                        <td>#${o.id.slice(-6)}</td>
+                        <td>${new Date(o.time).toLocaleString('km-KH')}</td>
+                        <td>${o.customer.name}</td>
+                        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${items}">${items}</td>
+                        <td>${o.customer.address || '-'}</td>
+                        <td><b>${o.customer.salesPerson}</b></td>
+                        <td>${o.final_total.toLocaleString()} ₩</td>
+                        <td>${(settings.delivery_fee || 5000).toLocaleString()}</td>
+                        <td style="color:#27ae60;font-weight:bold;">${(o.final_total - (settings.delivery_fee || 5000)).toLocaleString()} ₩</td>
+                        <td><span class="${o.paid ? 'status-paid' : 'status-unpaid'}">${o.paid ? 'ទូទាត់រួច' : 'មិនទូទាត់'}</span></td>
+                        <td style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                            <button onclick="editOrder(${originalIndex})" style="background:#3498db;color:white;border:none;padding:0.5rem 0.8rem;border-radius:8px;cursor:pointer;font-size:0.9rem;">កែ</button>
+                            <button onclick="editPrices(${originalIndex})" style="background:#9b59b6;color:white;border:none;padding:0.5rem 0.8rem;border-radius:8px;cursor:pointer;font-size:0.9rem;">កែតម្លៃ</button>
+                            <button onclick="deleteOrder(${originalIndex})" style="background:#e74c3c;color:white;border:none;padding:0.5rem 0.8rem;border-radius:8px;cursor:pointer;font-size:0.9rem;">លុប</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('') || `<tr><td colspan="11" style="padding:2rem;color:#999;">មិនទាន់មានប្រវត្តិ</td></tr>`;
+        }
+
+        async function editOrder(index) {
+            const o = orders[index];
+            const c = o.customer;
+
+            const newName = prompt("ឈ្មោះអតិថិជនថ្មី:", c.name);
+            if (newName === null) return;
+            const newPhone = prompt("លេខទូរសព្ទថ្មី:", c.phone || "");
+            if (newPhone === null) return;
+            const newAddress = prompt("អាសយដ្ឋានថ្មី:", c.address || "");
+            if (newAddress === null) return;
+            const newDiscount = prompt("បញ្ចុះតម្លៃ (%) ថ្មី (0-100):", c.discount);
+            if (newDiscount === null) return;
+            const newStaff = prompt("បុគ្គលិកលក់ថ្មី:", c.salesPerson);
+            if (newStaff === null) return;
+            const paidStatus = confirm("ចុច OK = ទូទាត់រួច\nចុច Cancel = មិនទាន់ទូទាត់");
+
+            const subtotal = o.items.reduce((s, it) => s + it.price * it.qty, 0);
+            const discountAmount = subtotal * (parseFloat(newDiscount) / 100);
+            const finalTotal = subtotal - discountAmount + (settings.delivery_fee || 5000);
+
+            c.name = newName.trim() || "អតិថិជនទូទៅ";
+            c.phone = newPhone.trim();
+            c.address = newAddress.trim();
+            c.discount = isNaN(newDiscount) ? 0 : Math.min(100, Math.max(0, parseFloat(newDiscount)));
+            c.salesPerson = newStaff.trim() || "មិនបានជ្រើស";
+            o.paid = paidStatus;
+            o.discount_amount = discountAmount;
+            o.final_total = finalTotal;
+
+            const { error } = await supabase.from('orders').update(o).eq('id', o.id);
+            if (error) throw error;
+            renderOrders();
+            renderStaffSummary();
+            alert("កែប្រែប្រវត្តិជោគជ័យ!");
+        }
+
+        async function editPrices(orderIndex) {
+            const order = orders[orderIndex];
+            if (!order || order.items.length === 0) return alert("គ្មានទំនិញដើម្បីកែតម្លៃ!");
+
+            let message = "កែតម្លៃទំនិញ:\n";
+            order.items.forEach((item, i) => {
+                message += `${i + 1}. ${item.name} (បច្ចុប្បន្ន: ${item.price.toLocaleString()} ₩)\n`;
+            });
+            message += "\nបញ្ចូលតម្លៃថ្មី (ដាច់ខ្សែ |)";
+
+            const input = prompt(message, order.items.map(it => it.price).join(' | '));
+            if (input === null) return;
+
+            const newPrices = input.split('|').map(p => parseInt(p.trim())).filter(p => !isNaN(p));
+            if (newPrices.length !== order.items.length) return alert("ចំនួនតម្លៃមិនត្រឹមត្រូវ!");
+
+            let subtotal = 0;
+            order.items.forEach((item, i) => {
+                item.price = newPrices[i];
+                subtotal += item.price * item.qty;
+            });
+
+            const discountAmount = subtotal * (order.customer.discount / 100);
+            const finalTotal = subtotal - discountAmount + (settings.delivery_fee || 5000);
+
+            order.subtotal = subtotal;
+            order.discount_amount = discountAmount;
+            order.final_total = finalTotal;
+
+            const { error } = await supabase.from('orders').update(order).eq('id', order.id);
+            if (error) throw error;
+            renderOrders();
+            renderStaffSummary();
+            alert("កែតម្លៃទំនិញជោគជ័យ!");
+        }
+
+        async function deleteOrder(index) {
+            if (!confirm("លុបការបញ្ជាទិញនេះមែនទេ?\nស្តុកនឹងត្រឡប់មកវិញ 100%")) return;
+            const order = orders[index];
+            order.items.forEach(item => {
+                const product = products.find(p => p.name === item.name);
+                if (product) product.stock += item.qty;
+            });
+            const { error } = await supabase.from('orders').delete().eq('id', order.id);
+            if (error) throw error;
+            orders.splice(index, 1);
+            await saveData();
+            renderProducts();
+            renderOrders();
+            renderStaffSummary();
+        }
+
+        function getStaffFullSummary() {
+            const summary = {};
+            [...(settings.staff || []), 'មិនបានជ្រើស'].forEach(staff => {
+                summary[staff] = { totalOrders: 0, totalAmount: 0, deliveryTotal: 0, paidTotal: 0, unpaidTotal: 0, products: {} };
+            });
+            orders.forEach(o => {
+                const staff = o.customer.salesPerson || 'មិនបានជ្រើស';
+                if (!summary[staff]) summary[staff] = { totalOrders: 0, totalAmount: 0, deliveryTotal: 0, paidTotal: 0, unpaidTotal: 0, products: {} };
+                const s = summary[staff];
+                s.totalOrders++;
+                s.totalAmount += o.final_total;
+                s.deliveryTotal += (settings.delivery_fee || 5000);
+                if (o.paid) s.paidTotal += o.final_total;
+                else s.unpaidTotal += o.final_total;
+                o.items.forEach(item => {
+                    s.products[item.name] = (s.products[item.name] || 0) + item.qty;
+                });
+            });
+            return summary;
+        }
+
+        function renderStaffDetailTable() {
+            const tbody = document.querySelector('#staffDetailTable tbody');
+            const summary = getStaffFullSummary();
+            tbody.innerHTML = Object.keys(summary).map(staff => {
+                const s = summary[staff];
+                const productList = Object.keys(s.products).map(name => `${name} × ${s.products[name]}`).join('<br>');
+                return `
+                    <tr>
+                        <td><b>${staff}</b></td>
+                        <td>${s.totalOrders} ដង</td>
+                        <td class="product-list-detail">${productList || '-'}</td>
+                        <td>${s.totalAmount.toLocaleString()} ₩</td>
+                        <td>${s.deliveryTotal.toLocaleString()} ₩</td>
+                        <td style="color:#27ae60;font-weight:bold;">${s.paidTotal.toLocaleString()} ₩</td>
+                        <td style="color:#e74c3c;font-weight:bold;">${s.unpaidTotal.toLocaleString()} ₩</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderStaffSummary() {
+            const container = document.getElementById('staffDetailCards');
+            const summary = getStaffFullSummary();
+            let cardsHTML = '';
+            Object.keys(summary).sort((a, b) => summary[b].totalAmount - summary[a].totalAmount).forEach((staff, index) => {
+                const data = summary[staff];
+                const totalItems = Object.values(data.products).reduce((a, b) => a + b, 0);
+                cardsHTML += `
+                    <div style="background:white;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.15);padding:1.8rem;">
+                        <h3 style="font-size:1.5rem;color:#2c3e50;font-weight:bold;">${index===0 ? 'Top Seller ' : ''}${staff}</h3>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0;">
+                            <div style="background:#f8f9fa;padding:1rem;border-radius:15px;text-align:center;">
+                                <div style="font-size:0.9rem;color:#7f8c8d;">ចំនួនលក់</div>
+                                <div style="font-size:1.6rem;font-weight:bold;color:#e74c3c;">${data.totalOrders} ដង</div>
+                            </div>
+                            <div style="background:#f8f9fa;padding:1rem;border-radius:15px;text-align:center;">
+                                <div style="font-size:0.9rem;color:#7f8c8d;">ទំនិញសរុប</div>
+                                <div style="font-size:1.6rem;font-weight:bold;color:#27ae60;">${totalItems} ឯកតា</div>
+                            </div>
+                        </div>
+                        <div style="background:#e8f5e8;padding:1rem;border-radius:15px;">
+                            <div style="display:flex;justify-content:space-between;"><span>ចំណូលសរុប</span><b style="color:#27ae60;">${data.totalAmount.toLocaleString()} ₩</b></div>
+                            <div style="display:flex;justify-content:space-between;margin-top:0.5rem;"><span>ដឹកជញ្ជូន</span><b>${data.deliveryTotal.toLocaleString()} ₩</b></div>
+                            <div style="display:flex;justify-content:space-between;margin-top:0.5rem;">
+                                <span>ទូទាត់</span><b style="color:#27ae60;">${data.paidTotal.toLocaleString()} ₩</b>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span>មិនទូទាត់</span><b style="color:#e74c3c;">${data.unpaidTotal.toLocaleString()} ₩</b>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = cardsHTML || `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:#999;font-size:1.5rem;">មិនទាន់មានទិន្នន័យ</div>`;
+            document.getElementById('updateTime').innerText = new Date().toLocaleString('km-KH');
+        }
+
+        function switchStaffView(view) {
+            document.getElementById('staffDetailCards').style.display = view === 'cards' ? 'grid' : 'none';
+            document.getElementById('staffDetailTableContainer').style.display = view === 'table' ? 'block' : 'none';
+            document.getElementById('btnCards').classList.toggle('active', view === 'cards');
+            document.getElementById('btnTable').classList.toggle('active', view === 'table');
+            if (view === 'table') renderStaffDetailTable();
+        }
+
+        async function addProduct() {
+            const name = document.getElementById('pName').value.trim();
+            const price = parseInt(document.getElementById('pPrice').value);
+            const stock = parseInt(document.getElementById('pStock').value);
+            const category = document.getElementById('pCategory').value;
+            const image = document.getElementById('imagePreview').querySelector('img')?.src || '';
+            if (name && price > 0 && stock >= 0) {
+                const { data, error } = await supabase.from('products').insert([{ name, price, stock, category, image }]).select();
+                if (error) throw error;
+                products.unshift(data[0]);
+                renderProducts();
+                alert("បន្ថែមជោគជ័យ!");
+                document.getElementById('pName').value = '';
+                document.getElementById('pPrice').value = '';
+                document.getElementById('pStock').value = '';
+                document.getElementById('pCategory').value = '';
+                document.getElementById('imagePreview').innerHTML = '<span style="color:#999;">ជ្រើសរូបភាព</span>';
+            }
+        }
+
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => document.getElementById('imagePreview').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function openSetting() { document.getElementById('settingModal').style.display = 'flex'; }
+        function closeSetting() { document.getElementById('settingModal').style.display = 'none'; }
+
+        function playSound() { document.getElementById('checkoutSound').play().catch(() => {}); }
+
+        function renderAll() {
+            renderProducts();
+            renderCart();
+            renderOrders();
+            renderStaffSummary();
+        }
+
+        // === Export Orders to Excel ===
+        function exportToExcel() {
+            const selectedStaff = document.getElementById('staffFilter').value;
+            const filtered = selectedStaff ? orders.filter(o => o.customer.salesPerson === selectedStaff) : orders;
+
+            const data = filtered.map(o => ({
+                'ID': '#' + o.id.slice(-6),
+                'កាលបរិច្ឆេទ': new Date(o.time).toLocaleString('km-KH'),
+                'អតិថិជន': o.customer.name,
+                'ទូរសព្ទ': o.customer.phone || '-',
+                'អាសយដ្ឋាន': o.customer.address || '-',
+                'បុគ្គលិក': o.customer.salesPerson,
+                'ផលិតផល': o.items.map(it => `${it.name} × ${it.qty}`).join(', '),
+                'សរុប': o.subtotal.toLocaleString(),
+                'បញ្ចុះ (%)': o.customer.discount,
+                'បញ្ចុះ (₩)': o.discount_amount.toLocaleString(),
+                'ដឹកជញ្ជូន': (settings.delivery_fee || 5000).toLocaleString(),
+                'ចំណូលសុទ្ធ': (o.final_total - (settings.delivery_fee || 5000)).toLocaleString(),
+                'សរុបត្រូវបង់': o.final_total.toLocaleString(),
+                'ស្ថានភាព': o.paid ? 'ទូទាត់រួច' : 'មិនទូទាត់'
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Orders");
+            XLSX.writeFile(wb, `KH-KR_Orders_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+
+        // === Export All Staff Summary to Excel ===
+        function exportStaffAll() {
+            const summary = getStaffFullSummary();
+            const data = Object.keys(summary).map(staff => {
+                const s = summary[staff];
+                const productList = Object.keys(s.products).map(name => `${name} × ${s.products[name]}`).join(', ');
+                return {
+                    'បុគ្គលិក': staff,
+                    'ចំនួនលក់': s.totalOrders,
+                    'ទំនិញលក់បាន': productList || '-',
+                    'ចំណូលសរុប (₩)': s.totalAmount.toLocaleString(),
+                    'ដឹកជញ្ជូនសរុប (₩)': s.deliveryTotal.toLocaleString(),
+                    'ទូទាត់សរុប (₩)': s.paidTotal.toLocaleString(),
+                    'មិនទូទាត់សរុប (₩)': s.unpaidTotal.toLocaleString()
+                };
+            });
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Staff_Summary");
+            XLSX.writeFile(wb, `KH-KR_Staff_Summary_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+
+        // === Export Single Staff to Excel ===
+        function exportStaffSingle() {
+            const staff = document.getElementById('staffExportSelect').value;
+            if (!staff) return alert('សូមជ្រើសរើសបុគ្គលិកជាមុន!');
+
+            const summary = getStaffFullSummary();
+            const s = summary[staff];
+            if (!s) return alert('គ្មានទិន្នន័យសម្រាប់បុគ្គលិកនេះ');
+
+            const productList = Object.keys(s.products).map(name => `${name} × ${s.products[name]}`).join('\n');
+
+            const data = [{
+                'បុគ្គលិក': staff,
+                'ចំនួនលក់': s.totalOrders,
+                'ទំនិញលក់បាន': productList || '-',
+                'ចំណូលសរុប (₩)': s.totalAmount.toLocaleString(),
+                'ដឹកជញ្ជូនសរុប (₩)': s.deliveryTotal.toLocaleString(),
+                'ទូទាត់សរុប (₩)': s.paidTotal.toLocaleString(),
+                'មិនទូទាត់សរុប (₩)': s.unpaidTotal.toLocaleString()
+            }];
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Staff_Detail");
+            XLSX.writeFile(wb, `KH-KR_${staff.replace(/ /g, '_')}_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+
+        // === Print Invoice ===
+        function printInvoice() {
+            if (cart.length === 0) return alert('រទេះទទេ!');
+
+            const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+            const disc = parseFloat(document.getElementById('discountPercent').value) || 0;
+            const discountAmount = subtotal * (disc / 100);
+            const delivery = settings.delivery_fee || 5000;
+            const finalTotal = subtotal - discountAmount + delivery;
+
+            let itemsHTML = cart.map(item => `
+                <tr>
+                    <td>${item.name}</td>
+                    <td style="text-align:center;">${item.qty}</td>
+                    <td style="text-align:right;">${item.price.toLocaleString()}</td>
+                    <td style="text-align:right;">${(item.price * item.qty).toLocaleString()}</td>
+                </tr>
+            `).join('');
+
+            const printWindow = window.open('', '', 'width=800,height=600');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>វិក្កយបត្រ</title>
+                    <style>
+                        body { font-family: 'Khmer', Arial; padding: 20px; }
+                        .header { text-align: center; margin-bottom: 20px; }
+                        .logo { font-size: 2rem; font-weight: bold; color: #e74c3c; }
+                        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                        th, td { border: 1px solid #ddd; padding: 8px; }
+                        th { background: #f1f1f1; }
+                        .total { font-weight: bold; text-align: right; }
+                        .footer { margin-top: 30px; text-align: center; font-size: 0.9rem; color: #777; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="logo">Online KH-KR</div>
+                        <p>វិក្កយបត្រ #${Date.now().toString().slice(-6)}</p>
+                        <p>កាលបរិច្ឆេ�: ${new Date().toLocaleString('km-KH')}</p>
+                    </div>
+                    <p><strong>អតិថិជន:</strong> ${document.getElementById('customerName').value || 'អតិថិជនទូទៅ'}</p>
+                    <p><strong>ទូរសព្ទ:</strong> ${document.getElementById('customerPhone').value || '-'}</p>
+                    <p><strong>អាសយដ្ឋាន:</strong> ${document.getElementById('customerAddress').value || '-'}</p>
+                    <p><strong>បុគ្គលិក:</strong> ${document.getElementById('salesPerson').value || 'មិនបានជ្រើស'}</p>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ទំនិញ</th>
+                                <th>ចំនួន</th>
+                                <th>តម្លៃ</th>
+                                <th>សរុប</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHTML}
+                        </tbody>
+                    </table>
+
+                    <div style="text-align:right;">
+                        <p>សរុប: <strong>${subtotal.toLocaleString()} ₩</strong></p>
+                        <p>បញ្ចុះ ${disc}%: <strong>-${discountAmount.toLocaleString()} ₩</strong></p>
+                        <p>ដឹកជញ្ជូន: <strong>${delivery.toLocaleString()} ₩</strong></p>
+                        <p class="total">ត្រូវបង់សរុប: <strong style="font-size:1.2rem;color:#e74c3c;">${finalTotal.toLocaleString()} ₩</strong></p>
+                    </div>
+
+                    <div class="footer">
+                        <p>សូមអរគុណសម្រាប់ការបញ្ជាទិញ!</p>
+                        <p>Online KH-KR - លក់អនឡាញនៅកូរ៉េ</p>
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => printWindow.print(), 500);
+        }
+
+        window.onload = async () => {
+            await loadData();
+            showTab('products');
+        };
+    </script>
 </body>
-
 </html>
